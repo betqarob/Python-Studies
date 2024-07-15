@@ -14,25 +14,58 @@ def main():
             time.sleep(5)
             print("File terminated.")
         case "Y":
-            startGame()
+            cWord = chosen_word()
+            #start the game
+            startGame(cWord)
         
-#function that will handle the game (should continue running until a false value is returned)
-def startGame():
-    while True:
-        # randomly selects the word to start the game
-        cWord = chosen_word()
-        letters_guessed = [] # will keep track of the letters guessed
-        attempts = 7 # amount of attempts given.
+def startGame(word):
+    # variables that will be updateed as the game continues
+    len_of_word = len(word)
+    letters_guessed = []
+    attempts_wrong = 0
+    guess_index = 0
+    current_guesses = 0
+    
+    for l in word:
+        print(f"_", end=" ")
+    print(word)
+    #starts the game
+    while (attempts_wrong != 7 and current_guesses != len_of_word):
+        print(f"\nCurrent letters you've guessed: \n{letters_guessed}")
+        
+        guess = input("Enter the letter you want to guess: ")
 
-        # create a list that is filled with blanks to represent the letters needed to be guessed
-        blanks = ["_"] * len(cWord)
-
-        # wants to print the board and ask user for their input
-        while (attempts != 0 and ("_" in blanks)):
-            print(create_board(0), "\n", *blanks)
-            #print(*blanks) # using * will print everything within an array
+        # makes sure the length of the guess is a single character. 
+        if (len(guess) > 1):
+            print("Please enter a single letter! Try again")
+        else:
+            # guesses incorrectly
+            if (word[guess_index].lower() != guess):
+                print("Incorrect! Try again!")
+                attempts_wrong += 1 # will be incremented as a result of wrong guesses
+                letters_guessed.append(guess)
+                # print the board with the lines under
+                print(create_board(attempts_wrong))
+                current_guesses = printWord(letters_guessed, word)
+            else:
+                # guesses correctly
+                print("Correct! \n")
+                print(create_board(attempts_wrong))
+                guess_index += 1 #will increase the index and allow to keep track of the current spot in the word we are in
+                letters_guessed.append(guess) 
+                current_guesses = printWord(letters_guessed, word)
+        
+        if (current_guesses == len_of_word):
+            print(f"/n Gamve is over! You've completed the game with {7 - attempts_wrong} attempts left! Thank you for playing :D! ")
             break
-        break
+        
+        if(attempts_wrong == 7):
+            print("Game over! You've used all your attempts. Thank you for playing!")
+
+            
+
+
+    
             
 # project the board depending on the current attempts of the player
 def create_board(attempt):
@@ -81,7 +114,7 @@ def create_board(attempt):
     --------
     |      |
     |      o
-    |     /|\
+    |     /|"\"
     |
     |
     |
@@ -91,7 +124,7 @@ def create_board(attempt):
     --------
     |      |
     |      o
-    |     /|\
+    |     /|"\"
     |      |
     |
     |
@@ -101,7 +134,7 @@ def create_board(attempt):
     --------
     |      |
     |      o
-    |     /|\
+    |     /|"\"
     |      |
     |     /
     |
@@ -111,7 +144,7 @@ def create_board(attempt):
     --------
     |      |
     |      o
-    |     /|\
+    |     /|"\"
     |      |
     |     / \
     |
@@ -128,10 +161,27 @@ def chosen_word():
                  "Resolve", "Kingdom", "Malevolent", "Transfiguration", "Divergent", "Fluctuations", "Glamour"]
     
     word = random.choice(word_list)
-    
+
     return word
 
+def printWord(guesses_list, word):
+    # printing the word with dashes in them as well as the board
+    count = 0
+    letters_right = 0
+    for c in word:
+        if c.lower() in guesses_list:
+            print(word[count], end=" ")
+            letters_right += 1
+        else:
+            print("_", end=" ")
+        count += 1
+    return letters_right
 
+    
+def search_letter(letter, list):
+    for l in list:
+        if (l == letter):
+            return 
 # this line of code just starts the program.
 if __name__ == "__main__":
     main()
